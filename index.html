@@ -164,15 +164,13 @@ function ballHitBrick(ball, brick) {
     }, this);
 
     killTween.start(); // 启动动画
-
-    // 销毁砖块时停止物理碰撞
-    brick.body.enable = false;
+    brick.body.enable = false; // 禁用砖块的物理碰撞
 }
 
-// 小球碰到挡板时的处理
+// 小球与挡板碰撞时的处理
 function ballHitPaddle(ball, paddle) {
-    ball.animations.play('wobble'); // 播放小球动画
-    ball.body.velocity.x = -1 * 5 * (paddle.x - ball.x); // 根据碰撞点的不同调整小球的反弹角度
+    ball.animations.play('wobble');  // 播放小球的动画
+    ball.body.velocity.x = -1 * 5 * (paddle.x - ball.x);  // 调整小球的方向
 }
 
 // 小球离开屏幕时的处理
@@ -181,31 +179,29 @@ function ballLeaveScreen() {
     console.log("Ball lost. Remaining lives: " + lives);
 
     if (lives > 0) {
-        // 更新生命数
-        livesText.setText('Lives: ' + lives);
-        lifeLostText.visible = true; // 显示生命丧失提示
+        livesText.setText('Lives: ' + lives); // 更新生命数显示
+        lifeLostText.visible = true; // 显示“生命丧失”的提示
 
-        // 重置小球和挡板位置
+        // 重置小球和挡板的位置
         ball.reset(game.world.width * 0.5, game.world.height - 25);  // 重置第一个小球
         ball2.reset(game.world.width * 0.5, game.world.height - 25); // 重置第二个小球
         paddle.reset(game.world.width * 0.5, game.world.height - 5);  // 重置挡板
 
-        // 等待用户点击继续游戏
+        // 等待玩家点击继续
         game.input.onDown.addOnce(function () {
-            lifeLostText.visible = false;
-            ball.body.velocity.set(150, -150); // 重设小球的初始速度
-            ball2.body.velocity.set(-150, -150);  // 第二个小球的初始速度
+            lifeLostText.visible = false; // 隐藏提示
+            ball.body.velocity.set(150, -150); // 给小球设置初始速度
+            ball2.body.velocity.set(-150, -150);  // 第二个小球的速度设置为与第一个相反
         }, this);
     } else {
-        // 游戏结束
         alert('游戏结束，您输了!');
-        resetGame();  // 重置游戏
+        resetGame();  // 游戏结束，重置游戏
     }
 }
 
 // 重置游戏的状态
 function resetGame() {
-    // 重新初始化游戏状态，包括分数、生命数等
+    // 重新初始化游戏状态
     score = 0;
     lives = 3;
     remainingBricks = brickInfo.count.row * brickInfo.count.col;
@@ -216,6 +212,10 @@ function resetGame() {
     // 重新生成砖块
     bricks.removeAll();
     initBricks();
+
+    // 重置小球位置
+    ball.reset(game.world.width * 0.5, game.world.height - 25);
+    ball2.reset(game.world.width * 0.5, game.world.height - 25);
 
     // 显示开始按钮
     startButton.visible = true;
